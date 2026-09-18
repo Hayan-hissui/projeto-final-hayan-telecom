@@ -64,10 +64,9 @@ Máximo de **4 funcionalidades**. Se tiver mais, corte. Lembre: *qualidade acima
 
 | # | Funcionalidade | Essencial? | Quem faz |
 |---|---|---|---|
-| F1 | | Sim | |
-| F2 | | Sim | |
-| F3 | | Sim/Não | |
-| F4 | | Não | |
+| F1 |mostrar se o plano ta ativo ou nao| Sim |Sim|
+| F2 |renovar o plano caso nao esteja ativo| Sim |Sim|
+| F3 |enviar requisitação de instalação| Sim/Não |Sim|
 
 ---
 
@@ -75,7 +74,7 @@ Máximo de **4 funcionalidades**. Se tiver mais, corte. Lembre: *qualidade acima
 
 O que o app **não** vai fazer nesta entrega. Escrever isso aqui protege vocês de perder o prazo.
 
-- ❌
+- ❌ não executara as funcionalidade incialmente, tendo em vista que vamos trabalhar na interface primeiro
 - ❌
 - ❌
 
@@ -87,7 +86,7 @@ O que o app **não** vai fazer nesta entrega. Escrever isso aqui protege vocês 
 
 Marque **uma** opção (as três valem a mesma nota):
 
-- [ ] **Opção A — Room:** dados salvos no próprio celular (lista de compras, agenda, diário de treino, controle financeiro)
+- [A] **Opção A — Room:** dados salvos no próprio celular (lista de compras, agenda, diário de treino, controle financeiro)
 - [ ] **Opção B — Retrofit:** dados vindos de uma API pública (notícias, filmes, feed, clima)
 - [ ] **Opção C — Desafio:** API + salvar favoritos localmente
 
