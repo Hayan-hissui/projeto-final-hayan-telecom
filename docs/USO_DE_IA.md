@@ -1,0 +1,1 @@
+prompt pra criação do prd: preciso que você me ajude com essa atividade, tenho que preencher esse prd de acordo com o canvas, que é o meu documento de requisitos: dai eu enviei os arquivos de template pra o chat conseguir editar com base neles.
