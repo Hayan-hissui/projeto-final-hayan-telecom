@@ -18,22 +18,25 @@
 **Nome do app:** _Hayan Telecom_
 
 **Pitch em uma frase:**
-> "O app Hayan Telecom ajuda clientes a verificar seu plano sem precisar de ir até o estabelecimento presencial ou enviar mensagens."
+> "O app Hayan Telecom ajuda clientes a gerenciar seus boletos e o status do plano atual"
 ---
 
 ## 😖 Bloco 2 — Problema
 
 -
 Qual dor real vocês estão resolvendo? Descrevam uma situação concreta que alguém vive hoje.
-Os clientes da Hayan Telecom as vezes moram a uma distância considerável do local do estabelecimento, ou seja, é bem provável que suas rotinas sejam afetadas
-ao irem ao estabelecimento
 -
+Clientes precisam entrar em contato com a empresa para saber informações básicas sobre seu plano.
+A empresa recebe muitas solicitações relacionadas a status do plano e cobranças. Isso aumenta a demanda do atendimento
+e diminui a produtividade da equipe.
 
 **Como esse problema é resolvido hoje (sem o app)?**
 
 -
-Com atendimento via whatsapp ou rede sociais, porém, desse modo há uma demanda muito alta e uma perca de produtividade em outros setores.
--
+Principalmente por WhatsApp, redes sociais ou atendimento direto.
+O cliente precisa esperar um funcionário consultar as informações
+e responder. O app centraliza essas informações em um único lugar.
+
 
 ---
 
@@ -41,9 +44,9 @@ Com atendimento via whatsapp ou rede sociais, porém, desse modo há uma demanda
 
 Para quem é o app? Sejam específicos (idade, contexto, com que frequência usariam).
 
-- **Perfil principal:** Clientes, ou possíveis clientes
-- **Quando/onde usam:** Em casa
-- **Uma pessoa real que testaria o app:** _Jorge, o dono da empresa_
+- **Perfil principal:** Clientes de provedores de internet.
+- **Quando/onde usam:** Principalmente em casa, quando precisam consultar o plano ou uma cobrança.
+- **Uma pessoa real que testaria o app:** _Jorge, dono da empresa._
 
 ---
 
@@ -51,10 +54,15 @@ Para quem é o app? Sejam específicos (idade, contexto, com que frequência usa
 
 Descreva o que a **tela principal** mostra e o que o usuário consegue fazer nela.
 
-- **A tela principal lista:** basicamente o perfil do usuário na parte superior, como nome e foto, e se o plano está ou não ativo, o link pra outras abas, a do form
-de requisição de instalação e aba de pagamento (disponivel se o plano estiver suspenso)
-- **A ação principal do usuário é:** poder pagar seu plano
-- **Depois de agir, o usuário vê:** uma tela onde mostra o valor da cobrança do seu plano
+- **A tela principal lista:**
+- Nome e informações básicas do cliente.
+- Plano contratado e situação atual: ativo ou suspenso.
+- Valor da mensalidade e situação da cobrança.
+- Acesso à tela de detalhes da cobrança.
+
+
+- **A ação principal do usuário é:** Consultar a situação do plano e verificar se existe uma cobrança pendente.
+- **Depois de agir, o usuário vê:** Uma tela com os detalhes da cobrança, incluindo valor, vencimento e situação.
 
 ---
 
@@ -64,9 +72,9 @@ Máximo de **4 funcionalidades**. Se tiver mais, corte. Lembre: *qualidade acima
 
 | # | Funcionalidade | Essencial? | Quem faz |
 |---|---|---|---|
-| F1 |mostrar se o plano ta ativo ou nao| Sim |Sim|
-| F2 |renovar o plano caso nao esteja ativo| Sim |Sim|
-| F3 |enviar requisitação de instalação| Sim/Não |Sim|
+| F1 |	Visualizar o status do plano e dados da cobrança| Sim |Alberto|
+| F2 |	Realizar pagamento da mensalidade| Sim |Hayan|
+| F3 | Realizar login/cadastro| Sim |Gabriel|
 
 ---
 
@@ -74,9 +82,10 @@ Máximo de **4 funcionalidades**. Se tiver mais, corte. Lembre: *qualidade acima
 
 O que o app **não** vai fazer nesta entrega. Escrever isso aqui protege vocês de perder o prazo.
 
-- ❌ não executara as funcionalidade incialmente, tendo em vista que vamos trabalhar na interface primeiro
-- ❌
-- ❌
+- ❌ Não terá solicitação de instalação.
+- ❌ Não terá atendimento por chat ou WhatsApp integrado.
+- ❌ Não terá sistema completo de suporte ao cliente.
+- ❌ Não terá outros meios de pagamento inicialmente, como Pix ou cartão.
 
 *Sugestões comuns de coisas a deixar de fora: login/cadastro, notificações push, chat, mapa, pagamento, modo offline completo, sincronização em nuvem.*
 
@@ -86,18 +95,44 @@ O que o app **não** vai fazer nesta entrega. Escrever isso aqui protege vocês 
 
 Marque **uma** opção (as três valem a mesma nota):
 
-- [A] **Opção A — Room:** dados salvos no próprio celular (lista de compras, agenda, diário de treino, controle financeiro)
+- [ ] **Opção A — Room:** dados salvos no próprio celular (lista de compras, agenda, diário de treino, controle financeiro)
 - [ ] **Opção B — Retrofit:** dados vindos de uma API pública (notícias, filmes, feed, clima)
-- [ ] **Opção C — Desafio:** API + salvar favoritos localmente
+- [X] **Opção C — Desafio:** API + salvar dados localmente
 
 **Se escolheu B ou C — qual API?** _(link da documentação + precisa de chave? é gratuita?)_
+Asaas API (gratuita) https://docs.asaas.com/?utm_source=chatgpt.com
+Desenvolvimento: será utilizado o Sandbox do Asaas, que permite testar a integração sem movimentar
+dinheiro real. O Sandbox possui uma chave de API própria e é separado da produção. 
+
+Chave: sim, é necessária uma chave de API. Durante o desenvolvimento será utilizada a
+chave do Sandbox. Em produção será utilizada uma chave própria de produção. 
+
+Custo: o projeto será desenvolvido inicialmente no Sandbox, sem pagamentos reais. Caso o sistema
+seja colocado em produção futuramente, serão avaliados os custos e condições do serviço escolhido.
 
 **Bibliotecas que o grupo vai usar:**
+- Retrofit: comunicação entre o aplicativo e a API/backend.
+- Room: armazenamento local dos dados necessários.
+- Jetpack Compose: construção da interface.
+- Android Jetpack: componentes e recursos de desenvolvimento Android.
+- Kotlin: linguagem principal do projeto.
 
 **Onde entra o `try/catch`?** _(qual operação pode falhar: banco vazio, internet caindo, API fora do ar, campo em branco)_
 
 - Pode falhar:
+- conexão com a internet
+- comunicação com a API
+- API ou servidor indisponível
+- login com dados inválidos
+- consulta das cobranças
+- acesso aos dados do boleto
+- erro ao salvar ou consultar dados no banco local.
+  
 - O usuário vê a mensagem:
+- "E-mail ou senha inválidos."
+- "Não foi possível conectar ao servidor. Verifique sua internet e tente novamente."
+- "Não foi possível carregar suas cobranças. Tente novamente."
+- "Não foi possível acessar o boleto no momento. Tente novamente mais tarde."
 
 ---
 
@@ -105,10 +140,10 @@ Marque **uma** opção (as três valem a mesma nota):
 
 | Item | Definição do grupo |
 |---|---|
-| Nome exibido (`strings.xml`) | |
-| Cor principal (hex, em `Color.kt`) | `#______` |
-| Ideia do ícone (512×512) | |
-| `applicationId` | `br.edu.ifpe.______` |
+| Nome exibido (`strings.xml`) |Hayan Telecom|
+| Cor principal (hex, em `Color.kt`) | `#424f8f` |
+| Ideia do ícone (512×512) |Logo oficial da Hayan Telecom|
+| `applicationId` | `br.edu.ifpe.hayantelecom` |
 | Versão inicial | `1.0` (versionCode `1`) |
 
 ---
@@ -117,10 +152,10 @@ Marque **uma** opção (as três valem a mesma nota):
 
 | Integrante | Papel principal | Responsável por |
 |---|---|---|
-| | Dev / telas | |
-| | Dev / dados (Room ou Retrofit) | |
-| | Design e identidade visual | |
-| | Documentação, build e entrega | |
+|Hayan| Dev / telas |Interface, navegação e tela principal|
+|Gabriel e Alberto| Dev / dados (Room ou Retrofit) |API, Retrofit, Room e gerenciamento dos dados|
+|Hayan| Design e identidade visual |Integração com boletos, identidade visual e testes|
+|Todos| Documentação, build e entrega | Organização dos arquivos do projeto e realização de testes|
 
 > Todos programam. O "papel" define quem **responde** por aquela parte, não quem trabalha sozinho.
 
@@ -128,8 +163,9 @@ Marque **uma** opção (as três valem a mesma nota):
 
 | Risco | Plano B |
 |---|---|
-| | |
-| | |
+|Dificuldade na integração com a API de boletos|Utilizar o Sandbox e a documentação oficial do serviço|
+|API ou internet indisponível|Exibir uma mensagem de erro e utilizar dados locais quando possível|
+|Falta de tempo para concluir o sistema de pagamento|Priorizar login, consulta do plano, cobranças e acesso ao boleto|
 
 ---
 
@@ -139,19 +175,20 @@ A implementação pode ser feita com o **Gemini no Android Studio**. Vocês orie
 
 **Três regras que vamos escrever no nosso `AGENTS.md`** _(o arquivo que diz à IA como trabalhar no nosso projeto)_:
 
-1.
-2.
-3.
+1. A IA não deve adicionar funcionalidades que não estejam no PRD.
+2. Toda mudança feita pela IA deve ser lida e entendida pelo grupo.
+3. O código deve continuar simples para que todos consigam explicar o projeto.
 
 **Combinados do grupo:**
 
-- [ ] Ninguém clica *Accept* no Agent Mode sem ler a mudança inteira.
-- [ ] Quem aceitou o código escreve o comentário de fronteira do arquivo.
-- [ ] Antes de cada marco, revisamos juntos: alguém aqui não entende alguma parte?
-- [ ] Nenhuma chave de API ou senha vai para o prompt.
+- [X] Ninguém clica *Accept* no Agent Mode sem ler a mudança inteira.
+- [X] Quem aceitou o código escreve o comentário de fronteira do arquivo.
+- [X] Antes de cada marco, revisamos juntos: alguém aqui não entende alguma parte?
 - Outro combinado nosso:
-
+  Nenhuma nova funcionalidade será adicionada sem verificar primeiro se ela cabe no prazo do projeto.
 **Como vamos garantir que todos entendem tudo** _(ex.: quem implementa apresenta o arquivo aos outros; revezar as partes; revisar o pull request do colega)_:
+- O integrante responsável por uma parte deverá explicar o código aos demais.
+- O grupo fará revisões antes de cada marco.
 
 -
 
