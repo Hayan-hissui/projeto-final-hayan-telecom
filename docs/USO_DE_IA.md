@@ -205,3 +205,62 @@ Funcionalidades futuras do MVP:
 * Enviar requisição de instalação.
 
 Neste momento, NÃO implemente nenhuma dessas funcionalidades.
+
+cria um prompt pedindo pro gemini do android studio criar 3 endidades conforme esse documento que te mandei, antes de mandar o prompt me manda as endidades escolhidas que voce acha que se encaixam, pra eu conferir.
+Com base no PRD do projeto Hayan Telecom, crie apenas as 3 entidades principais do sistema:
+
+Cliente
+Campos:
+id
+nome
+email
+Plano
+Campos:
+id
+nome
+valorMensalidade
+status
+Cobranca
+Campos:
+id
+clienteId
+valor
+dataVencimento
+status
+codigoBoleto
+
+Contexto do projeto:
+
+Aplicativo Android em Kotlin.
+Interface utilizando Jetpack Compose.
+Arquitetura simples e fácil de entender para todos os integrantes.
+Retrofit será utilizado para comunicação com API.
+Room será utilizado para persistência local.
+O projeto utiliza Kotlin e Android Jetpack.
+A integração de cobranças utiliza a API do Asaas em ambiente Sandbox.
+
+Regras importantes:
+
+Crie somente essas 3 entidades.
+Não crie outras entidades, como Pagamento, Contrato, Técnico ou Usuário.
+Não implemente regras de negócio.
+Não implemente telas.
+Não implemente login.
+Não implemente Retrofit ou chamadas de API neste momento.
+Não implemente DAOs, Repository ou ViewModel, a menos que sejam estritamente necessários para que as entidades do Room sejam configuradas corretamente.
+Não adicione campos que não foram solicitados.
+Mantenha o código simples e fácil de explicar.
+Siga a estrutura de pastas já existente no projeto.
+Antes de alterar qualquer arquivo, analise a estrutura atual do projeto para evitar criar arquivos duplicados ou modificar arquivos desnecessariamente.
+Caso o projeto já possua alguma configuração do Room, aproveite a configuração existente em vez de criar outra.
+As entidades devem ser compatíveis com o Room.
+Use @Entity e @PrimaryKey quando apropriado.
+Os IDs devem ser identificadores únicos.
+Em Cobranca, clienteId deve representar o relacionamento da cobrança com o cliente.
+O campo status deve ser simples e compatível com a implementação atual do projeto.
+codigoBoleto deve representar a informação necessária para identificar/acessar o boleto quando disponível.
+
+Importante:
+Não altere o restante do projeto sem necessidade. Não crie funcionalidades além das 3 entidades solicitadas.
+
+Antes de fazer as alterações, explique brevemente quais arquivos você pretende criar ou modificar. Depois, implemente somente o necessário.
