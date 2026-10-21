@@ -8,9 +8,20 @@
 package br.edu.ifpe.hayantelecom.model
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "cobrancas")
+@Entity(
+    tableName = "cobrancas",
+    foreignKeys = [
+        ForeignKey(
+            entity = Cliente::class,
+            parentColumns = ["id"],
+            childColumns = ["clienteId"],
+            onDelete = ForeignKey.NO_ACTION
+        )
+    ]
+)
 data class Cobranca(
     @PrimaryKey val id: String,
     val clienteId: String,
