@@ -18,4 +18,12 @@ O repositório agora atua como mediador para todas as operações do `ClienteDao
 
 ## 4. Impacto na UI
 - As telas que consomem `clienteFlow` (como `HomeScreen` e `ProfileScreen` via `NavGraph`) agora se beneficiam de operações de escrita mais seguras e consistentes.
-- O fluxo de "Cadastro" e "Login" pode agora ser expandido futuramente para persistir dados reais de novos usuários utilizando os métodos implementados no repositório.
+- O fluxo de "Cadastro" e "Login" foi integrado ao repositório para persistir e validar dados reais no Room.
+- A tela de login agora fornece feedback visual (`CircularProgressIndicator`) durante o processamento da autenticação.
+
+## 5. Feedback e Notificações de UI
+O sistema utiliza mensagens de erro em tela para notificar o usuário sobre o status das operações, seguindo o item 14 do PRD:
+- **Campos Vazios**: Exibe "Preencha todos os campos obrigatórios."
+- **Credenciais Inválidas**: Exibe "E-mail ou senha inválidos." (RF02).
+- **Falha de Conexão/Geral**: Exibe "Não foi possível conectar ao servidor. Verifique sua internet e tente novamente."
+- **Feedback de Carregamento**: O botão de entrada é desativado e exibe um indicador de progresso enquanto a autenticação é processada no banco de dados.
