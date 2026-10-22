@@ -20,5 +20,5 @@ interface PlanoDao {
     fun getPlano(): Flow<Plano?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPlano(plano: Plano)
+    suspend fun insertPlano(plano: Plano)
 }

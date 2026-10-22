@@ -37,8 +37,14 @@ import br.edu.ifpe.hayantelecom.ui.theme.BluePrimary
 import br.edu.ifpe.hayantelecom.ui.theme.StatusSuspended
 import br.edu.ifpe.hayantelecom.ui.theme.TextSecondary
 
+import androidx.compose.runtime.rememberCoroutineScope
+import br.edu.ifpe.hayantelecom.model.Cliente
+import kotlinx.coroutines.launch
+import java.util.UUID
+
 @Composable
 fun CadastroScreen(
+    onCadastroRequested: suspend (Cliente) -> Unit,
     onCadastroSuccess: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
@@ -46,6 +52,7 @@ fun CadastroScreen(
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    val coroutineScope = rememberCoroutineScope()
 
     fun processarCadastro() {
         if (nome.isBlank() || email.isBlank() || senha.isBlank()) {
@@ -56,8 +63,26 @@ fun CadastroScreen(
             errorMessage = "A senha deve conter pelo menos 4 caracteres."
             return
         }
-        errorMessage = null
-        onCadastroSuccess()
+        
+        val novoCliente = Cliente(
+            id = UUID.randomUUID().toString(),
+            nome = nome,
+            email = email,
+            cpf = "", // O CPF poderia ser coletado, mas manteremos o escopo simples conforme PRD
+            codigoCliente = "HT-${(1000..9999).random()}",
+            endereco = "",
+            senha = senha
+        )
+
+        coroutineScope.launch {
+            try {
+                onCadastroRequested(novoCliente)
+                errorMessage = null
+                onCadastroSuccess()
+            } catch (e: Exception) {
+                errorMessage = "Erro ao realizar cadastro. Tente novamente."
+            }
+        }
     }
 
     Column(

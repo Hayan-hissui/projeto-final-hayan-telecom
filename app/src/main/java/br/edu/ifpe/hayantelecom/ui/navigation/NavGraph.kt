@@ -89,6 +89,9 @@ fun NavGraph(
         ) {
             composable(NavTarget.Login.route) {
                 LoginScreen(
+                    onLoginRequested = { identifier, password ->
+                        repository.autenticar(identifier, password)
+                    },
                     onLoginSuccess = {
                         navController.navigate(NavTarget.Home.route) {
                             popUpTo(NavTarget.Login.route) { inclusive = true }
@@ -102,6 +105,9 @@ fun NavGraph(
 
             composable(NavTarget.Cadastro.route) {
                 CadastroScreen(
+                    onCadastroRequested = { novoCliente ->
+                        repository.insertCliente(novoCliente)
+                    },
                     onCadastroSuccess = {
                         navController.navigate(NavTarget.Home.route) {
                             popUpTo(NavTarget.Cadastro.route) { inclusive = true }

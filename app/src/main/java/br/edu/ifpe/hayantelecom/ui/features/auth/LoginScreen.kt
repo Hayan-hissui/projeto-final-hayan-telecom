@@ -37,31 +37,38 @@ import br.edu.ifpe.hayantelecom.ui.theme.BluePrimary
 import br.edu.ifpe.hayantelecom.ui.theme.StatusSuspended
 import br.edu.ifpe.hayantelecom.ui.theme.TextSecondary
 
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+
 @Composable
 fun LoginScreen(
+    onLoginRequested: suspend (String, String) -> Boolean,
     onLoginSuccess: () -> Unit,
     onNavigateToCadastro: () -> Unit
 ) {
     var emailOrCpf by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    val coroutineScope = rememberCoroutineScope()
 
     fun processarLogin() {
-        try {
-            if (emailOrCpf.isBlank() || password.isBlank()) {
-                errorMessage = "Preencha todos os campos obrigatórios."
-                return
-            }
+        if (emailOrCpf.isBlank() || password.isBlank()) {
+            errorMessage = "Preencha todos os campos obrigatórios."
+            return
+        }
 
-            // Validação simples de credenciais conforme PRD (RF01 e RF02)
-            if (password.length >= 4) {
-                errorMessage = null
-                onLoginSuccess()
-            } else {
-                errorMessage = "E-mail ou senha inválidos."
+        coroutineScope.launch {
+            try {
+                val success = onLoginRequested(emailOrCpf, password)
+                if (success) {
+                    errorMessage = null
+                    onLoginSuccess()
+                } else {
+                    errorMessage = "E-mail ou senha inválidos."
+                }
+            } catch (e: Exception) {
+                errorMessage = "Não foi possível conectar ao servidor. Verifique sua internet e tente novamente."
             }
-        } catch (_: Exception) {
-            errorMessage = "Não foi possível conectar ao servidor. Verifique sua internet e tente novamente."
         }
     }
 

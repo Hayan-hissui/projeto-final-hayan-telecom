@@ -8,9 +8,11 @@
 package br.edu.ifpe.hayantelecom.data.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import br.edu.ifpe.hayantelecom.model.Cliente
 import kotlinx.coroutines.flow.Flow
 
@@ -19,9 +21,24 @@ interface ClienteDao {
     @Query("SELECT * FROM clientes LIMIT 1")
     fun getCliente(): Flow<Cliente?>
 
+    @Query("SELECT * FROM clientes WHERE id = :id LIMIT 1")
+    fun getClienteById(id: String): Flow<Cliente?>
+
     @Query("SELECT * FROM clientes WHERE email = :email LIMIT 1")
-    fun getClienteByEmail(email: String): Cliente?
+    suspend fun getClienteByEmail(email: String): Cliente?
+
+    @Query("SELECT * FROM clientes WHERE cpf = :cpf LIMIT 1")
+    suspend fun getClienteByCpf(cpf: String): Cliente?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCliente(cliente: Cliente)
+    suspend fun insertCliente(cliente: Cliente)
+
+    @Update
+    suspend fun updateCliente(cliente: Cliente)
+
+    @Delete
+    suspend fun deleteCliente(cliente: Cliente)
+
+    @Query("DELETE FROM clientes")
+    suspend fun clearClientes()
 }
