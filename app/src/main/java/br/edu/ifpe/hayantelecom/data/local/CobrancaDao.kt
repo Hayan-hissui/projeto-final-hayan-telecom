@@ -20,14 +20,14 @@ interface CobrancaDao {
     fun getAllCobrancas(): Flow<List<Cobranca>>
 
     @Query("SELECT * FROM cobrancas WHERE id = :id LIMIT 1")
-    fun getCobrancaById(id: String): Cobranca?
+    suspend fun getCobrancaById(id: String): Cobranca?
 
     @Query("SELECT * FROM cobrancas WHERE status = 'EM_ABERTO' LIMIT 1")
     fun getCobrancaPendente(): Flow<Cobranca?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCobrancas(cobrancas: List<Cobranca>)
+    suspend fun insertCobrancas(cobrancas: List<Cobranca>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCobranca(cobranca: Cobranca)
+    suspend fun insertCobranca(cobranca: Cobranca)
 }

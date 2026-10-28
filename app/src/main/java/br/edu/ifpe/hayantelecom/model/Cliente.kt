@@ -17,5 +17,6 @@ data class Cliente(
     val email: String,
     val cpf: String,
     val codigoCliente: String,
-    val endereco: String
+    val endereco: String,
+    val senha: String = "1234"
 )

@@ -88,6 +88,37 @@ class HayanRepository(private val database: AppDatabase) {
         }
     }
 
+    suspend fun insertCliente(cliente: Cliente) = withContext(Dispatchers.IO) {
+        database.clienteDao().insertCliente(cliente)
+    }
+
+    suspend fun updateCliente(cliente: Cliente) = withContext(Dispatchers.IO) {
+        database.clienteDao().updateCliente(cliente)
+    }
+
+    suspend fun deleteCliente(cliente: Cliente) = withContext(Dispatchers.IO) {
+        database.clienteDao().deleteCliente(cliente)
+    }
+
+    suspend fun getClienteById(id: String): Flow<Cliente?> = withContext(Dispatchers.IO) {
+        database.clienteDao().getClienteById(id)
+    }
+
+    suspend fun getClienteByEmail(email: String): Cliente? = withContext(Dispatchers.IO) {
+        database.clienteDao().getClienteByEmail(email)
+    }
+
+    suspend fun getClienteByCpf(cpf: String): Cliente? = withContext(Dispatchers.IO) {
+        database.clienteDao().getClienteByCpf(cpf)
+    }
+
+    suspend fun autenticar(emailOrCpf: String, senha: String): Boolean = withContext(Dispatchers.IO) {
+        val cliente = database.clienteDao().getClienteByEmail(emailOrCpf)
+            ?: database.clienteDao().getClienteByCpf(emailOrCpf)
+        
+        cliente != null && cliente.senha == senha
+    }
+
     suspend fun simularPagamento(cobrancaId: String): Boolean = withContext(Dispatchers.IO) {
         val cobranca = database.cobrancaDao().getCobrancaById(cobrancaId) ?: return@withContext false
         val cobrancaPaga = cobranca.copy(status = "PAGO")
