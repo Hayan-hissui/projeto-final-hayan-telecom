@@ -49,6 +49,13 @@ fun NavGraph(
 
     val coroutineScope = rememberCoroutineScope()
 
+    // Sincroniza dados remotos ao entrar na Home
+    androidx.compose.runtime.LaunchedEffect(currentRoute) {
+        if (currentRoute == NavTarget.Home.route) {
+            repository.sincronizarCobrancasRemotas()
+        }
+    }
+
     val showBottomBar = currentRoute in listOf(
         NavTarget.Home.route,
         NavTarget.Plano.route,

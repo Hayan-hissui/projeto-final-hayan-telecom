@@ -35,3 +35,8 @@ Apresente um relatório técnico detalhado contendo:
 2. **Arquitetura de Pastas Proposta:** Organização recomendada separando a Camada de Apresentação (Jetpack Compose), Modelos de Dados e Persistência local (Room).
 3. **Plano de Implementação em Marcos:** Ordem lógica e incremental de desenvolvimento alinhada ao cronograma do projeto.
 4. **Exemplos de Código Inicial:** Exemplo de configuração do arquivo `Color.kt` com a cor `#424F8F` e a modelagem inicial de dados para orientar o grupo no Android Studio.
+
+
+
+
+PROMPT 2

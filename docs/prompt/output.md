@@ -100,3 +100,35 @@ data class Cobranca(
 
 ---
 *Este documento serve como guia oficial para o desenvolvimento do app Hayan Telecom.*
+
+## Implementação Retrofit e Integração com API (05/11/2026)
+
+### Resumo das Modificações
+Implementada a camada de rede utilizando Retrofit para integração com a API Sandbox do Asaas. Os dados de cobranças agora podem ser sincronizados remotamente e persistidos localmente no Room.
+
+### Arquivos Criados
+- `data/remote/AsaasApiService.kt`: Interface de definição dos endpoints.
+- `data/remote/RetrofitClient.kt`: Configuração da instância Retrofit.
+- `data/remote/dto/AsaasCobrancaResponse.kt`: DTOs para mapeamento da resposta JSON.
+- `data/remote/mapper/CobrancaMapper.kt`: Lógica de conversão DTO -> Entity.
+
+### Arquivos Alterados
+- `app/build.gradle.kts`: Adicionadas dependências do Retrofit e Gson.
+- `data/repository/HayanRepository.kt`: Adicionado método `sincronizarCobrancasRemotas` que integra API e Banco de Dados.
+- `ui/navigation/NavGraph.kt`: Adicionado `LaunchedEffect` para disparar a sincronização ao carregar a tela principal.
+
+### Detalhes Técnicos
+- **Endpoint Utilizado:** `GET /v3/payments` (Listagem de cobranças).
+- **Mapeamento de Status:** Convertidos status do Asaas (`RECEIVED`, `CONFIRMED`, `PENDING`, `OVERDUE`) para o domínio interno (`PAGO`, `EM_ABERTO`, `VENCIDO`).
+- **Estratégia de Persistência:** O repositório tenta buscar dados remotos; se bem-sucedido, atualiza o Room. A UI consome os dados via `Flow` do Room, garantindo funcionamento offline.
+- **Segurança:** Utilizada chave de API Sandbox. Recomenda-se mover para variáveis de ambiente ou backend intermediário em produção.
+
+### Testes Executados
+- Verificação de compilação: **OK**.
+- Sincronização Gradle: **OK**.
+- Mapeamento de dados: Validado via Mapper unitário.
+- Fluxo de Navegação: Mantido conforme PRD.
+
+### Pendências
+- Implementar tratamento visual de erro (Snackbar) caso a API falhe durante a sincronização na Home.
+- Implementar paginação para grandes volumes de cobranças.
