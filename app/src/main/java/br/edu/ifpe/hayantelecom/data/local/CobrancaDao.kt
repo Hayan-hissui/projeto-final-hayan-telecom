@@ -8,9 +8,11 @@
 package br.edu.ifpe.hayantelecom.data.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import br.edu.ifpe.hayantelecom.model.Cobranca
 import kotlinx.coroutines.flow.Flow
 
@@ -22,6 +24,9 @@ interface CobrancaDao {
     @Query("SELECT * FROM cobrancas WHERE id = :id LIMIT 1")
     suspend fun getCobrancaById(id: String): Cobranca?
 
+    @Query("SELECT * FROM cobrancas WHERE clienteId = :clienteId")
+    fun getCobrancasByCliente(clienteId: String): Flow<List<Cobranca>>
+
     @Query("SELECT * FROM cobrancas WHERE status = 'EM_ABERTO' LIMIT 1")
     fun getCobrancaPendente(): Flow<Cobranca?>
 
@@ -30,4 +35,10 @@ interface CobrancaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCobranca(cobranca: Cobranca)
+
+    @Update
+    suspend fun updateCobranca(cobranca: Cobranca)
+
+    @Delete
+    suspend fun deleteCobranca(cobranca: Cobranca)
 }
