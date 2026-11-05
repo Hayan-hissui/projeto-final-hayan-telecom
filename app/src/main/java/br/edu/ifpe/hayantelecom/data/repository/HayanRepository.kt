@@ -8,6 +8,8 @@
 package br.edu.ifpe.hayantelecom.data.repository
 
 import br.edu.ifpe.hayantelecom.data.local.AppDatabase
+import br.edu.ifpe.hayantelecom.data.remote.RetrofitClient
+import br.edu.ifpe.hayantelecom.data.remote.mapper.toModel
 import br.edu.ifpe.hayantelecom.model.Cliente
 import br.edu.ifpe.hayantelecom.model.Cobranca
 import br.edu.ifpe.hayantelecom.model.Plano
@@ -18,6 +20,9 @@ import kotlinx.coroutines.withContext
 
 class HayanRepository(private val database: AppDatabase) {
 
+    // CHAVE SANDBOX ASAAS (Uso acadêmico)
+    private val ASAAS_API_KEY = "\$aae.your_sandbox_key_here"
+
     val clienteFlow: Flow<Cliente?> = database.clienteDao().getCliente()
     val planoFlow: Flow<Plano?> = database.planoDao().getPlano()
     val cobrancasFlow: Flow<List<Cobranca>> = database.cobrancaDao().getAllCobrancas()
@@ -25,6 +30,29 @@ class HayanRepository(private val database: AppDatabase) {
 
     suspend fun getCobrancaById(id: String): Cobranca? = withContext(Dispatchers.IO) {
         database.cobrancaDao().getCobrancaById(id)
+    }
+
+    /**
+     * Sincroniza as cobranças da API Asaas com o banco local.
+     */
+    suspend fun sincronizarCobrancasRemotas(customerId: String? = null): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val response = RetrofitClient.asaasApi.getPayments(ASAAS_API_KEY, customerId)
+            if (response.isSuccessful) {
+                val asaasData = response.body()?.data ?: emptyList()
+                val cobrancas = asaasData.map { it.toModel() }
+                
+                // Atualiza localmente
+                if (cobrancas.isNotEmpty()) {
+                    database.cobrancaDao().insertCobrancas(cobrancas)
+                }
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Erro na API: \${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     suspend fun popularDadosIniciaisSeNecessario() = withContext(Dispatchers.IO) {
