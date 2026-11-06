@@ -2,7 +2,7 @@
  * Hayan Telecom - App Android
  * Arquivo: HomeScreen.kt
  * Responsável: Hayan / Interface, Navegação e Tela Principal
- * Descrição: Tela principal (Dashboard) apresentando o resumo do cliente, plano e situação da cobrança.
+ * Descrição: Tela principal (Dashboard) migrada para ViewModel.
  */
 
 package br.edu.ifpe.hayantelecom.ui.features.home
@@ -24,14 +24,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.edu.ifpe.hayantelecom.model.Cliente
-import br.edu.ifpe.hayantelecom.model.Cobranca
-import br.edu.ifpe.hayantelecom.model.Plano
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.edu.ifpe.hayantelecom.ui.components.StatusChip
 import br.edu.ifpe.hayantelecom.ui.theme.BluePrimary
 import br.edu.ifpe.hayantelecom.ui.theme.SurfaceWhite
@@ -41,11 +41,13 @@ import java.util.Locale
 
 @Composable
 fun HomeScreen(
-    cliente: Cliente?,
-    plano: Plano?,
-    cobrancaPendente: Cobranca?,
+    viewModel: HomeViewModel = viewModel(),
     onVerBoletoClicked: (String) -> Unit
 ) {
+    val cliente by viewModel.cliente.collectAsState()
+    val plano by viewModel.plano.collectAsState()
+    val cobrancaPendente by viewModel.cobrancaPendente.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +68,7 @@ fun HomeScreen(
             modifier = Modifier.padding(bottom = 20.dp)
         )
 
-        // Card do Plano Atual (F1)
+        // Card do Plano Atual
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -117,7 +119,7 @@ fun HomeScreen(
             }
         }
 
-        // Card da Cobranca Pendente (F1 e F2)
+        // Card da Cobranca Pendente
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -142,25 +144,25 @@ fun HomeScreen(
                     ) {
                         Column {
                             Text(
-                                text = cobrancaPendente.descricao,
+                                text = cobrancaPendente!!.descricao,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = TextPrimary
                             )
                             Text(
-                                text = "Vencimento: ${cobrancaPendente.dataVencimento}",
+                                text = "Vencimento: ${cobrancaPendente!!.dataVencimento}",
                                 fontSize = 14.sp,
                                 color = TextSecondary,
                                 modifier = Modifier.padding(top = 2.dp)
                             )
                         }
-                        StatusChip(status = cobrancaPendente.status)
+                        StatusChip(status = cobrancaPendente!!.status)
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "Valor: R$ ${String.format(Locale.getDefault(), "%.2f", cobrancaPendente.valor)}",
+                        text = "Valor: R$ ${String.format(Locale.getDefault(), "%.2f", cobrancaPendente!!.valor)}",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = BluePrimary
@@ -169,7 +171,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
-                        onClick = { onVerBoletoClicked(cobrancaPendente.id) },
+                        onClick = { onVerBoletoClicked(cobrancaPendente!!.id) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp),

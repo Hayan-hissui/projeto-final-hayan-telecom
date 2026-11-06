@@ -28,6 +28,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.edu.ifpe.hayantelecom.model.Cliente
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.edu.ifpe.hayantelecom.ui.theme.DividerColor
 import br.edu.ifpe.hayantelecom.ui.theme.StatusSuspended
 import br.edu.ifpe.hayantelecom.ui.theme.SurfaceWhite
@@ -36,9 +39,10 @@ import br.edu.ifpe.hayantelecom.ui.theme.TextSecondary
 
 @Composable
 fun ProfileScreen(
-    cliente: Cliente?,
+    viewModel: ProfileViewModel = viewModel(),
     onLogoutClicked: () -> Unit
 ) {
+    val cliente by viewModel.cliente.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()

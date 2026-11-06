@@ -2,7 +2,7 @@
  * Hayan Telecom - App Android
  * Arquivo: CadastroScreen.kt
  * Responsável: Gabriel Fernando / Autenticação
- * Descrição: Tela de cadastro de conta demonstrativa para novos clientes com feedback visual.
+ * Descrição: Tela de cadastro de conta migrada para ViewModel.
  */
 
 package br.edu.ifpe.hayantelecom.ui.features.auth
@@ -32,10 +32,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,59 +46,47 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.edu.ifpe.hayantelecom.model.Cliente
 import br.edu.ifpe.hayantelecom.ui.theme.BluePrimary
 import br.edu.ifpe.hayantelecom.ui.theme.StatusSuspended
 import br.edu.ifpe.hayantelecom.ui.theme.TextSecondary
-import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
 fun CadastroScreen(
-    onCadastroRequested: suspend (Cliente) -> Unit,
+    viewModel: AuthViewModel = viewModel(),
     onCadastroSuccess: () -> Unit,
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
+    onCadastroRequested: (Cliente) -> Unit = { cliente -> viewModel.cadastrar(cliente) }
 ) {
     var nome by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    var isLoading by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
+
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
     fun processarCadastro() {
         if (nome.isBlank() || email.isBlank() || senha.isBlank()) {
-            errorMessage = "Preencha todos os campos obrigatórios."
+            // Em vez de setar erro local, poderíamos ter uma função no VM para isso
+            // Mas para manter a lógica do VM centralizada:
+            val clienteInvalido = Cliente(id="", nome=nome, email=email, senha=senha, cpf="", codigoCliente="", endereco="")
+            onCadastroRequested(clienteInvalido) 
             return
         }
-        if (senha.length < 4) {
-            errorMessage = "A senha deve conter pelo menos 4 caracteres."
-            return
-        }
-        
-        isLoading = true
+
         val novoCliente = Cliente(
             id = UUID.randomUUID().toString(),
             nome = nome,
             email = email,
-            cpf = "", // O CPF poderia ser coletado, mas manteremos o escopo simples conforme PRD
+            cpf = "",
             codigoCliente = "HT-${(1000..9999).random()}",
             endereco = "",
             senha = senha
         )
-
-        coroutineScope.launch {
-            try {
-                onCadastroRequested(novoCliente)
-                errorMessage = null
-                onCadastroSuccess()
-            } catch (e: Exception) {
-                errorMessage = "Erro ao realizar cadastro. Tente novamente."
-            } finally {
-                isLoading = false
-            }
-        }
+        onCadastroRequested(novoCliente)
     }
 
     Column(
@@ -126,7 +114,7 @@ fun CadastroScreen(
             value = nome,
             onValueChange = {
                 nome = it
-                errorMessage = null
+                viewModel.clearError()
             },
             label = { Text("Nome completo") },
             leadingIcon = {
@@ -147,7 +135,7 @@ fun CadastroScreen(
             value = email,
             onValueChange = {
                 email = it
-                errorMessage = null
+                viewModel.clearError()
             },
             label = { Text("E-mail") },
             leadingIcon = {
@@ -168,7 +156,7 @@ fun CadastroScreen(
             value = senha,
             onValueChange = {
                 senha = it
-                errorMessage = null
+                viewModel.clearError()
             },
             label = { Text("Senha") },
             leadingIcon = {

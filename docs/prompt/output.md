@@ -99,4 +99,21 @@ data class Cobranca(
 ```
 
 ---
+
+## 5. ViewModel e Integração Final
+
+A arquitetura MVVM foi concluída, integrando a interface Jetpack Compose com o banco de dados Room e a API remota do Asaas.
+
+### Componentes Implementados:
+- **HayanRepository:** Centraliza o acesso a dados locais e remotos, incluindo a lógica de sincronização com a Sandbox do Asaas.
+- **RetrofitClient & AsaasApi:** Configurados para consumir a API de pagamentos (Sandbox) e mapear os dados para o modelo interno via `CobrancaMapper`.
+- **ViewModels:**
+  - `AuthViewModel`: Gerencia login, cadastro e estados de erro.
+  - `HomeViewModel`: Provê dados para o Dashboard e dispara sincronização inicial.
+  - `PlanViewModel`: Gerencia a exibição do plano contratado.
+  - `InvoicesViewModel`: Controla a listagem de cobranças e ações de pagamento.
+  - `ProfileViewModel`: Gerencia dados do perfil e logout.
+- **NavGraph:** Atualizado para injetar ViewModels em cada rota usando `ViewModelFactory`, garantindo desacoplamento entre UI e lógica de negócio.
+
+---
 *Este documento serve como guia oficial para o desenvolvimento do app Hayan Telecom.*

@@ -2,13 +2,14 @@
  * Hayan Telecom - App Android
  * Arquivo: InvoicesScreen.kt
  * Responsável: Alberto Vinicius / Boletos e Cobranças
- * Descrição: Tela com listagem de cobranças separadas por situação ("Em aberto" e "Pago").
+ * Descrição: Tela com listagem de cobranças migrada para ViewModel.
  */
 
 package br.edu.ifpe.hayantelecom.ui.features.invoices
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,13 +22,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.edu.ifpe.hayantelecom.model.Cobranca
 import br.edu.ifpe.hayantelecom.ui.components.StatusChip
 import br.edu.ifpe.hayantelecom.ui.theme.BluePrimary
@@ -38,69 +43,81 @@ import java.util.Locale
 
 @Composable
 fun InvoicesScreen(
-    cobrancas: List<Cobranca>,
+    viewModel: InvoicesViewModel = viewModel(),
     onCobrancaClicked: (String) -> Unit
 ) {
+    val cobrancas by viewModel.cobrancas.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
     val emAberto = cobrancas.filter { it.status == "EM_ABERTO" || it.status == "VENCIDO" }
     val pagas = cobrancas.filter { it.status == "PAGO" }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-    ) {
-        Text(
-            text = "Minhas Cobranças",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            color = TextPrimary,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-            if (emAberto.isNotEmpty()) {
-                item {
-                    Text(
-                        text = "Em aberto",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextSecondary,
-                        modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
-                    )
-                }
-                items(emAberto) { cobranca ->
-                    CobrancaItemCard(cobranca = cobranca, onClick = { onCobrancaClicked(cobranca.id) })
-                }
-            }
+            Text(
+                text = "Minhas Cobranças",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = TextPrimary,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
 
-            if (pagas.isNotEmpty()) {
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Histórico de pagamentos",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextSecondary,
-                        modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
-                    )
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (emAberto.isNotEmpty()) {
+                    item {
+                        Text(
+                            text = "Em aberto",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = TextSecondary,
+                            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+                        )
+                    }
+                    items(emAberto) { cobranca ->
+                        CobrancaItemCard(cobranca = cobranca, onClick = { onCobrancaClicked(cobranca.id) })
+                    }
                 }
-                items(pagas) { cobranca ->
-                    CobrancaItemCard(cobranca = cobranca, onClick = { onCobrancaClicked(cobranca.id) })
-                }
-            }
 
-            if (cobrancas.isEmpty()) {
-                item {
-                    Text(
-                        text = "Nenhuma cobrança encontrada no momento.",
-                        fontSize = 14.sp,
-                        color = TextSecondary,
-                        modifier = Modifier.padding(top = 16.dp)
-                    )
+                if (pagas.isNotEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Histórico de pagamentos",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = TextSecondary,
+                            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+                        )
+                    }
+                    items(pagas) { cobranca ->
+                        CobrancaItemCard(cobranca = cobranca, onClick = { onCobrancaClicked(cobranca.id) })
+                    }
+                }
+
+                if (cobrancas.isEmpty() && !isLoading) {
+                    item {
+                        Text(
+                            text = "Nenhuma cobrança encontrada no momento.",
+                            fontSize = 14.sp,
+                            color = TextSecondary,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
                 }
             }
+        }
+
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = BluePrimary
+            )
         }
     }
 }

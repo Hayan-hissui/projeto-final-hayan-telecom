@@ -2,7 +2,7 @@
  * Hayan Telecom - App Android
  * Arquivo: LoginScreen.kt
  * Responsável: Gabriel Fernando / Autenticação
- * Descrição: Tela de autenticação por e-mail/CPF e senha com tratamento de erros e feedback visual.
+ * Descrição: Tela de autenticação por e-mail/CPF e senha migrada para ViewModel.
  */
 
 package br.edu.ifpe.hayantelecom.ui.features.auth
@@ -31,10 +31,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,47 +45,24 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.edu.ifpe.hayantelecom.ui.theme.BluePrimary
 import br.edu.ifpe.hayantelecom.ui.theme.StatusSuspended
 import br.edu.ifpe.hayantelecom.ui.theme.TextSecondary
-import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
-    onLoginRequested: suspend (String, String) -> Boolean,
+    viewModel: AuthViewModel = viewModel(),
     onLoginSuccess: () -> Unit,
-    onNavigateToCadastro: () -> Unit
+    onNavigateToCadastro: () -> Unit,
+    onLoginRequested: (String, String) -> Unit = { id, pass -> viewModel.login(id, pass) }
 ) {
     var emailOrCpf by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    var isLoading by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
 
-    fun processarLogin() {
-        if (emailOrCpf.isBlank() || password.isBlank()) {
-            errorMessage = "Preencha todos os campos obrigatórios."
-            return
-        }
-
-        isLoading = true
-        coroutineScope.launch {
-            try {
-                val success = onLoginRequested(emailOrCpf, password)
-                if (success) {
-                    errorMessage = null
-                    onLoginSuccess()
-                } else {
-                    errorMessage = "E-mail ou senha inválidos."
-                }
-            } catch (e: Exception) {
-                errorMessage = "Não foi possível conectar ao servidor. Verifique sua internet e tente novamente."
-            } finally {
-                isLoading = false
-            }
-        }
-    }
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
     Column(
         modifier = Modifier
@@ -112,7 +89,7 @@ fun LoginScreen(
             value = emailOrCpf,
             onValueChange = {
                 emailOrCpf = it
-                errorMessage = null
+                viewModel.clearError()
             },
             label = { Text("E-mail ou CPF") },
             leadingIcon = {
@@ -133,7 +110,7 @@ fun LoginScreen(
             value = password,
             onValueChange = {
                 password = it
-                errorMessage = null
+                viewModel.clearError()
             },
             label = { Text("Senha") },
             leadingIcon = {
@@ -169,7 +146,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { processarLogin() },
+            onClick = { onLoginRequested(emailOrCpf, password) },
             enabled = !isLoading,
             modifier = Modifier
                 .fillMaxWidth()

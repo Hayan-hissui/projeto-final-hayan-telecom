@@ -42,6 +42,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.edu.ifpe.hayantelecom.model.Cobranca
 import br.edu.ifpe.hayantelecom.ui.components.StatusChip
 import br.edu.ifpe.hayantelecom.ui.theme.BackgroundGray
@@ -55,9 +57,12 @@ import java.util.Locale
 
 @Composable
 fun InvoiceDetailScreen(
-    cobranca: Cobranca?,
-    onPagarClicked: (String) -> Unit
+    boletoId: String,
+    viewModel: InvoicesViewModel = viewModel(),
+    onNavigateBack: () -> Unit
 ) {
+    val cobrancas by viewModel.cobrancas.collectAsState()
+    val cobranca = cobrancas.find { it.id == boletoId }
     val context = LocalContext.current
     var feedbackMessage by remember { mutableStateOf<String?>(null) }
     var feedbackIsError by remember { mutableStateOf(false) }
@@ -188,7 +193,7 @@ fun InvoiceDetailScreen(
                     Button(
                         onClick = {
                             try {
-                                onPagarClicked(cobranca.id)
+                                viewModel.pagarCobranca(cobranca.id)
                                 feedbackMessage = "Pagamento processado com sucesso via Asaas (Sandbox)!"
                                 feedbackIsError = false
                             } catch (_: Exception) {

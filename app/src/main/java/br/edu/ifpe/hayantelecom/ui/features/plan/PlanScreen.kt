@@ -2,7 +2,7 @@
  * Hayan Telecom - App Android
  * Arquivo: PlanScreen.kt
  * Responsável: Alberto Vinicius / Visualização do Plano
- * Descrição: Tela de detalhes contratuais do plano de internet contratado pelo cliente.
+ * Descrição: Tela de detalhes contratuais do plano de internet migrada para ViewModel.
  */
 
 package br.edu.ifpe.hayantelecom.ui.features.plan
@@ -23,14 +23,16 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.edu.ifpe.hayantelecom.model.Cliente
-import br.edu.ifpe.hayantelecom.model.Plano
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.edu.ifpe.hayantelecom.ui.components.StatusChip
+import br.edu.ifpe.hayantelecom.ui.features.profile.ProfileViewModel
 import br.edu.ifpe.hayantelecom.ui.theme.BluePrimary
 import br.edu.ifpe.hayantelecom.ui.theme.DividerColor
 import br.edu.ifpe.hayantelecom.ui.theme.SurfaceWhite
@@ -40,9 +42,12 @@ import java.util.Locale
 
 @Composable
 fun PlanScreen(
-    cliente: Cliente?,
-    plano: Plano?
+    planViewModel: PlanViewModel = viewModel(),
+    profileViewModel: ProfileViewModel = viewModel()
 ) {
+    val plano by planViewModel.plano.collectAsState()
+    val cliente by profileViewModel.cliente.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
